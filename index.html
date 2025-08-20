@@ -1,34 +1,156 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Simples</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 300px;
+        }
+
+        .display {
+            background-color: #222;
+            color: #fff;
+            font-size: 2.5em;
+            padding: 20px;
+            text-align: right;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+        }
+
+        .btn {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #d0d0d0;
+        }
+
+        .btn.operator {
+            background-color: #f7941d;
+            color: #fff;
+        }
+
+        .btn.operator:hover {
+            background-color: #e68a1a;
+        }
+
+        .btn.clear {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .btn.clear:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn.equals {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .btn.equals:hover {
+            background-color: #45a049;
+        }
+
+        .btn.zero {
+            grid-column: span 2;
+        }
+    </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" class="calculator-screen" disabled />
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn operator" onclick="appendToDisplay('/')">/</button>
+            <button class="btn operator" onclick="appendToDisplay('*')">*</button>
+            <button class="btn" onclick="appendToDisplay('7')">7</button>
+            <button class="btn" onclick="appendToDisplay('8')">8</button>
+            <button class="btn" onclick="appendToDisplay('9')">9</button>
+            <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+            <button class="btn" onclick="appendToDisplay('4')">4</button>
+            <button class="btn" onclick="appendToDisplay('5')">5</button>
+            <button class="btn" onclick="appendToDisplay('6')">6</button>
+            <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+            <button class="btn" onclick="appendToDisplay('1')">1</button>
+            <button class="btn" onclick="appendToDisplay('2')">2</button>
+            <button class="btn" onclick="appendToDisplay('3')">3</button>
+            <button class="btn equals" onclick="calculateResult()">=</button>
+            <button class="btn zero" onclick="appendToDisplay('0')">0</button>
+            <button class="btn" onclick="appendToDisplay('.')">.</button>
+        </div>
+    </div>
 
-        <div class="calculator-keys">
-            <button type="button" class="operator" value="+">+</button>
-            <button type="button" class="operator" value="-">-</button>
-            <button type="button" class="operator" value="*">&times;</button>
-            <button type="button" class="operator" value="/">&divide;</button>
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '0';
+        let operator = null;
+        let previousInput = null;
+        let resetDisplay = false;
 
-            <button type="button" value="7">7</button>
-            <button type="button" value="8">8</button>
-            <button type="button" value="9">9</button>
+        function appendToDisplay(value) {
+            if (resetDisplay) {
+                currentInput = value;
+                resetDisplay = false;
+            } else {
+                if (currentInput === '0' && value !== '.') {
+                    currentInput = value;
+                } else {
+                    currentInput += value;
+                }
+            }
+            display.innerText = currentInput;
+        }
 
-            <button type="button" value="4">4</button>
-            <button type="button" value="5">5</button>
-            <button type="button" value="6">6</button>
+        function clearDisplay() {
+            currentInput = '0';
+            operator = null;
+            previousInput = null;
+            resetDisplay = false;
+            display.innerText = currentInput;
+        }
 
-            <button type="button" value="1">1</button>
-            <button type="button" value="2">2</button>
-            <button type="button" value="3">3</button>
-
-            <button type="button" value="0">0</button>
-            <button type="button" class="decimal" value=".">.</button>
-            <button type="button" class="all-clear" value="all-clear">AC
+        function calculateResult() {
+            try {
+                // Remove leading zeros that are not part of a decimal number
+                currentInput = currentInput.replace(/^0+(?=\d)/, '');
+                let result = eval(currentInput); // eval() is used for simplicity, but generally not recommended for production due to security
+                display.innerText = result;
+                currentInput = result.toString();
+                resetDisplay = true;
+            } catch (e) {
+                display.innerText = 'Error';
+                currentInput = '0';
+                resetDisplay = true;
+            }
+        }
+    </script>
+</body>
+</html>
