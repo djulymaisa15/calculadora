@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora CSS Elegante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis CSS para Cores - Fácil de customizar! */
+        :root {
+            --bg-color: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%); /* Azul/Ciano */
+            --calculator-bg: #f8f9fa; /* Branco Off-white */
+            --display-bg: #34495e; /* Azul Escuro */
+            --display-text: #ecf0f1; /* Branco Gelo */
+            --button-bg: #e0e6ea; /* Cinza Claro */
+            --button-text: #34495e; /* Azul Escuro */
+            --operator-bg: #f39c12; /* Laranja Vívido */
+            --operator-hover: #e67e22; /* Laranja Mais Escuro */
+            --clear-bg: #c0392b; /* Vermelho Escuro */
+            --clear-hover: #e74c3c; /* Vermelho Mais Claro */
+            --equals-bg: #2ecc71; /* Verde Esmeralda */
+            --equals-hover: #27ae60; /* Verde Mais Escuro */
+            --button-shadow: rgba(0, 0, 0, 0.1);
+            --calculator-shadow: rgba(0, 0, 0, 0.25);
+        }
+
+        /* Estilos Gerais do Corpo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-color); /* Usando a variável de cor de fundo */
+            margin: 0;
+            overflow: hidden; /* Evita barras de rolagem desnecessárias */
+        }
+
+        /* Container Principal da Calculadora */
+        .calculator {
+            background-color: var(--calculator-bg);
+            border-radius: 20px; /* Mais arredondado */
+            box-shadow: 0 15px 40px var(--calculator-shadow); /* Sombra mais pronunciada */
+            padding: 30px;
+            width: 340px; /* Um pouco maior */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; /* Para possíveis efeitos futuros */
+            transform-style: preserve-3d; /* Para efeitos 3D se necessário */
+        }
+
+        /* Estilo do Display */
+        .display {
+            background-color: var(--display-bg);
+            color: var(--display-text);
+            font-size: 3.5em; /* Fonte ainda maior */
+            padding: 25px 20px;
+            text-align: right;
+            border-radius: 15px; /* Cantos mais arredondados */
+            margin-bottom: 25px;
+            width: calc(100% - 40px); /* Ajusta a largura com padding */
+            box-sizing: border-box;
+            word-wrap: break-word;
+            min-height: 90px; /* Altura mínima para o display */
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            font-weight: 300; /* Fonte mais leve */
+            letter-spacing: -1px; /* Espaçamento entre letras para um look clean */
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra interna para profundidade */
+        }
+
+        /* Layout dos Botões */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px; /* Maior espaçamento entre os botões */
+            width: 100%;
+        }
+
+        /* Estilo Base dos Botões */
+        .btn {
+            background-color: var(--button-bg);
+            border: none;
+            border-radius: 12px; /* Cantos mais arredondados */
+            padding: 20px;
+            font-size: 1.8em; /* Fonte maior para os botões */
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1); /* Transição com curva mais suave */
+            box-shadow: 0 5px 15px var(--button-shadow); /* Sombra mais suave */
+            color: var(--button-text);
+            font-weight: 400;
+            outline: none; /* Remove o contorno azul ao focar */
+        }
+
+        /* Efeitos de Hover e Active para todos os botões */
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02); /* Elevação e leve aumento no tamanho */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Sombra maior no hover */
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98); /* Recuo e leve diminuição no clique */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo dos Operadores */
+        .btn.operator {
+            background-color: var(--operator-bg);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn.operator:hover {
+            background-color: var(--operator-hover);
+        }
+
+        /* Estilo do Botão Clear */
+        .btn.clear {
+            background-color: var(--clear-bg);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn.clear:hover {
+            background-color: var(--clear-hover);
+        }
+
+        /* Estilo do Botão de Igual */
+        .btn.equals {
+            background-color: var(--equals-bg);
+            color: #fff;
+            grid-column: span 2;
+            font-size: 2em; /* Fonte ainda maior */
+            font-weight: 700;
+        }
+
+        .btn.equals:hover {
+            background-color: var(--equals-hover);
+        }
+
+        /* Estilo do Botão Zero */
+        .btn.zero {
+            grid-column: span 2;
+            text-align: left;
+            padding-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn operator" onclick="appendToDisplay('/')">÷</button>
+            <button class="btn operator" onclick="appendToDisplay('*')">×</button>
+            <button class="btn" onclick="appendToDisplay('7')">7</button>
+            <button class="btn" onclick="appendToDisplay('8')">8</button>
+            <button class="btn" onclick="appendToDisplay('9')">9</button>
+            <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+            <button class="btn" onclick="appendToDisplay('4')">4</button>
+            <button class="btn" onclick="appendToDisplay('5')">5</button>
+            <button class="btn" onclick="appendToDisplay('6')">6</button>
+            <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+            <button class="btn" onclick="appendToDisplay('1')">1</button>
+            <button class="btn" onclick="appendToDisplay('2')">2</button>
+            <button class="btn" onclick="appendToDisplay('3')">3</button>
+            <button class="btn equals" onclick="calculateResult()">=</button>
+            <button class="btn zero" onclick="appendToDisplay('0')">0</button>
+            <button class="btn" onclick="appendToDisplay('.')">.</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '0';
+        let resetDisplay = false;
+
+        function appendToDisplay(value) {
+            if (display.innerText === 'Error') {
+                clearDisplay();
+            }
+
+            if (resetDisplay) {
+                currentInput = value;
+                resetDisplay = false;
+            } else {
+                if (currentInput === '0' && value !== '.') {
+                    currentInput = value;
+                } else if (value === '.' && currentInput.includes('.')) {
+                    return;
+                }
+                else {
+                    currentInput += value;
+                }
+            }
+            display.innerText = currentInput;
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            resetDisplay = false;
+            display.innerText = currentInput;
+        }
+
+        function calculateResult() {
+            try {
+                if (currentInput === '' || ['+', '-', '*', '/'].includes(currentInput.slice(-1))) {
+                     display.innerText = 'Error';
+                     currentInput = '0';
+                     resetDisplay = true;
+                     return;
+                }
+
+                let expression = currentInput.replace(/÷/g, '/').replace(/×/g, '*');
+
+                // Remove operadores duplicados, mas permite múltiplos números e pontos decimais
+                expression = expression.replace(/([+\-*/])(?=[+\-*/])/g, '');
+
+                let result = eval(expression);
+                display.innerText = result;
+                currentInput = result.toString();
+                resetDisplay = true;
+            } catch (e) {
+                display.innerText = 'Error';
+                currentInput = '0';
+                resetDisplay = true;
+            }
+        }
+    </script>
+</body>
+</html>
